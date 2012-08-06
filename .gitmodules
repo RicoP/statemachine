@@ -1,0 +1,6 @@
+[submodule "UglifyJS"]
+	path = UglifyJS
+	url = git://github.com/mishoo/UglifyJS.git
+[submodule "streamlinejs"]
+	path = streamlinejs
+	url = git://github.com/Sage/streamlinejs.git
