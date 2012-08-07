@@ -35,19 +35,32 @@ function iterateOverFunctionDefs(touple, callback) {
 	}
 }
 
-var uglyparse = require("../UglifyJS/lib/parse-js.js"); 
+function deepCopy(obj) {
+	if (Object.prototype.toString.call(obj) === '[object Array]') {
+		var out = [], i = 0, len = obj.length;
+		for ( ; i < len; i++ ) {
+			out[i] = deepCopy(obj[i]);
+		}
+
+		return out;
+	}
+
+	return obj;
+}
+
+var uglyparse   = require("../UglifyJS/lib/parse-js.js"); 
 var uglyprocess = require("../UglifyJS/lib/process.js"); 
-var fs = require("fs"); 
+var fs          = require("fs"); 
 
 var source = fs.readFileSync(process.argv[2]).toString() 
 var ast = uglyparse.parse(source); 
 
-console.log(JSON.stringify(ast)); 
+//console.log(JSON.stringify(ast)); 
 //throw ""; 
 
 iterateOverCalls(ast, function(call) {
 	var args = call[2]; 
-	console.log(" > " + JSON.stringify(args)); 
+	//console.log(" > " + JSON.stringify(args)); 
 	args.push( ["name", "_"] ); //callback for streamline.js
 });
 

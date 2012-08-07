@@ -3,7 +3,8 @@ var hasItem = true;
 this.onTrigger = function() {
 	if(hasItem) { 
 		if(Game.gold >= 5) {
-			GiveItem( Choise("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon") ); 
+			var answer = Choise("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon"); 
+			GiveItem( anwser ); 
 			Say("Goodbye"); 
 			hasItem = false; 
 		}
