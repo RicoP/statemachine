@@ -1,14 +1,10 @@
 #ifndef STREAMLINE_JS
 #define STREAMLINE_JS
 
+window.Streamline = { globals: {} };
 var __filename = "<UNKNOWN>"; 
-var Streamline = (function() { 
-
-function alert(message) {
-	throw new Error(message); 
-}
-
-#include "../streamlinejs/lib/callbacks/require-stub.js"
+	
+//#include "../streamlinejs/lib/callbacks/require-stub.js"
 #include "../streamlinejs/deps/narcissus/lib/jsdefs.js"
 #include "../streamlinejs/deps/narcissus/lib/jslex.js"
 #include "../streamlinejs/deps/narcissus/lib/jsparse.js"
@@ -18,9 +14,5 @@ function alert(message) {
 #include "../streamlinejs/lib/util/future.js"
 #include "../streamlinejs/lib/callbacks/runtime.js"
 #include "../streamlinejs/lib/callbacks/builtins.js"
-
-return Streamline; 
-
-}()); 
 
 #endif 

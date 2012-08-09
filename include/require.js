@@ -17,4 +17,4 @@ function require(str) {
 	}
 }
 
-#endif REQUIRE_JS
+#endif 

@@ -5,11 +5,11 @@
 
 var Uglify = {}; 
 
-(function(export) { 
+(function(exports) { 
 	#include "../UglifyJS/lib/parse-js.js"
 }(Uglify)); 
 
-(function(export) { 
+(function(exports) { 
 	#include "../UglifyJS/lib/process.js"
 }(Uglify)); 
 
