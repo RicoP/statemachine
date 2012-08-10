@@ -2,7 +2,7 @@
 
 function Choose(callback, message, a, b) {
 	console.log("Choose:", message, a, b);
-	var answer = ((confirm((("Willste " + a))) ? a : b));
+	var answer = ((confirm((("You want a " + a + "?"))) ? a : b));
 	callback(null, answer);
 }
 

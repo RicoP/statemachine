@@ -73,7 +73,10 @@ return {
 		return Uglify.gen_code(ast); 
 	},
 	"makeasync" : function(source) {
-		return Streamline.transform(source); 
+		if(!__rt) {
+			throw new Error("Global variable '__rt' is not defined"); 
+		}
+		return "var __trap = __rt.__trap; " + Streamline.transform(source, {noHelpers : true}); 
 	}
 };
 
