@@ -1,2 +1,2 @@
 #!/bin/sh
-cpp src/compile.js -P -I include > deploy/finished.js
+cpp src/compile.js -P -I include > compiler.js
