@@ -16,10 +16,20 @@ function GiveItem(callback, item) {
 	window.setTimeout(callback, 2000);
 }
 
+function Sleep(callback, time) {
+	window.setTimeout(callback, time); 
+}
+
+function Print(callback, message) {
+	console.log(message); 
+	callback(); 
+}
+
 function OnTrigger(callback, func) {
 	window.onTrigger = func;
 	if(callback) callback(); 
 }
 
-var Game = { gold : 6 }; 
+
+var Game = { gold : 5 }; 
 

@@ -13,59 +13,96 @@ textarea {
 <script src="../compiler.js"> </script>  
 <table width="100%" height="100%">
 <tr>
-<td>Script</td> 
+<td>Script
+<select id="combo" >
+<option value="0">Dialog with choises</option>
+<option value="1">Pseudo Multithreading</option>
+</select> 
+</td> 
 <td>extended with underscore</td>
 <td>Final aynchrone code</td>
 </tr>
 <tr height="95%">
-<td><textarea id="codeinput">var hasItem = true; 
-OnTrigger(function() { 
-  if (hasItem) { 
-    if ((Game.gold &gt;= 5)) { 
-      hasItem = false; 
-      Game.gold -= 5;
-      var answer = Choose("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon"); 
-      GiveItem(answer); 
-      Say("Goodbye"); 
-    } 
-    else { 
-      Say("Come back when you have enough money."); 
-    } 
-  } 
-  else { 
-    Say("Have a nice day."); 
-  } 
-});</textarea></td> 
-<td><textarea id="underscore"> </textarea></td> 
-<td><textarea id="streamline"> </textarea></td> 
+<td><textarea id="codeinput"></textarea></td> 
+<td><textarea id="underscore" readonly="readonly"> </textarea></td> 
+<td><textarea id="streamline" readonly="readonly"> </textarea></td> 
 </tr>
 <tr>
 <td>Check the console for output.</td>
 <td></td>
-<td><button id="execute">Execute</button> <button id="trigger">onTrigger()</button></td>
+<td><button id="execute">Reset</button> <button id="trigger">onTrigger()</button></td>
 </tr> 
 </table> 
 </body> 
 <script>
+
+var code = [
+  'var hasItem = true;\n' +
+  'OnTrigger(function() {\n' +
+  '  if (hasItem) {\n' +
+  '    if ((Game.gold >= 5)) {\n' +
+  '      hasItem = false;\n' +
+  '      Game.gold -= 5;\n' +
+  '      var answer = Choose("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon");\n' +
+  '      GiveItem(answer);\n' +
+  '      Say("Goodbye");\n' +
+  '    }\n' +
+  '    else {\n' +
+  '      Say("Come back when you have enough money.");\n' +
+  '    }\n' +
+  '  }\n' +
+  '  else {\n' +
+  '    Say("Have a nice day.");\n' +
+  '  }\n' +
+  '});',
+
+  '//Pseudo multithreading.\n' +
+  '//Hit onTrigger() multiple times.\n' +
+  '\n' +
+  'Game.gold = 0;\n' +
+  'var instance = 0;\n' +
+  '\n' +
+  'OnTrigger(function() {\n' +
+  '  var i = instance++;\n' +
+  '  while(Game.gold < 500) {\n' +
+  '    Game.gold += 10;\n' +
+  '    Print("Instance: " + i + ", Gold: " + Game.gold);\n' +
+  '    Sleep(500);\n' +
+  '  }\n' +
+  '});'
+]; 
+
 $(function() { 
 	$("#codeinput").keyup(function() {
-		var source = $("#codeinput").val(); 
-		var underscore = Compiler.underscore(source); 
-		$("#underscore").val(underscore); 
+		try { 
+			var source = $("#codeinput").val(); 
+			var underscore = Compiler.underscore(source); 
+			$("#underscore").val(underscore); 
 
-		var async = Compiler.makeasync(underscore); 
-		$("#streamline").val(async); 
+			var async = Compiler.makeasync(underscore); 
+			$("#streamline").val(async); 
+			eval( async ); 
+		} 
+		catch(e) {
+			$("#streamline").val(e.message || e.toString()); 
+		}
 	}); 
 
 	$("#execute").click(function() {
-		eval( $("#streamline").val() ); 
-		if(window.onTrigger) window.onTrigger(function(err) { if(err) console.error(err); });
+		var async = $("#streamline").val(); 
+		eval( async ); 
 	}); 
 
 	$("#trigger").click(function() {
-		window.onTrigger(); 
+		if(window.onTrigger) window.onTrigger(function(err) { if(err) console.error(err); });
 	}); 
 
-	$("#codeinput").keyup(); 
+	$("#combo").change(function() {
+		var i = $("#combo").val() | 0; 
+		$("#codeinput").val( code[i] );  
+		$("#codeinput").keyup(); 
+	}); 
+
+	$("#combo").change(); 
 }); 
 </script> 

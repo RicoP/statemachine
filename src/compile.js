@@ -76,7 +76,11 @@ return {
 		if(!__rt) {
 			throw new Error("Global variable '__rt' is not defined"); 
 		}
-		return "var __trap = __rt.__trap; " + Streamline.transform(source, {noHelpers : true}); 
+		  
+		return "var __func = __rt.__func,__cb = __rt.__cb,__trap = __rt.__trap;" + Streamline.transform(source, {noHelpers : true}); 
+	},
+	"createAsyncFunction" : function(source) {
+		return new Function( this.makeasync( this.underscore( source))); 
 	}
 };
 
