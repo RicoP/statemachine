@@ -28,7 +28,7 @@ textarea {
 <td><textarea id="streamline" readonly="readonly"> </textarea></td> 
 </tr>
 <tr>
-<td>Check the console for output.</td>
+<td><span id="output">Check the console for output.</span> </td> 
 <td></td>
 <td><button id="execute">Reset</button> <button id="trigger">onTrigger()</button></td>
 </tr> 
@@ -72,14 +72,19 @@ var code = [
   '});'
 ]; 
 
+function beautify(source) {
+	var ast = Uglify.parse(source); 
+	return Uglify.gen_code(ast, {beautify : true}); 
+}
+
 $(function() { 
 	$("#codeinput").keyup(function() {
 		try { 
 			var source = $("#codeinput").val(); 
-			var underscore = Compiler.underscore(source); 
+			var underscore = beautify( Compiler.underscore(source) ); 
 			$("#underscore").val(underscore); 
 
-			var async = Compiler.makeasync(underscore); 
+			var async = beautify( Compiler.makeasync(underscore) ); 
 			$("#streamline").val(async); 
 			eval( async ); 
 		} 
@@ -89,6 +94,7 @@ $(function() {
 	}); 
 
 	$("#execute").click(function() {
+		console.log("Reset"); 
 		var async = $("#streamline").val(); 
 		eval( async ); 
 	}); 
