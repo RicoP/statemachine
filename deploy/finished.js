@@ -7210,24 +7210,8 @@ require && require("streamline/lib/callbacks/builtins");
       args.splice((((index != null) && (index >= 0)) ? index : args.length), 0, callback);
       return this.apply(thisObj, args); } });
 })(((typeof exports !== "undefined") ? exports : (Streamline.builtins = (Streamline.builtins || {}))));
-var SOURCE =
-'	var hasItem = true; ' +
-'	OnTrigger(function() { ' +
-'		if (hasItem) { ' +
-'			if ((Game.gold >= 5)) { ' +
-'				var answer = Choose("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon"); ' +
-'				GiveItem(answer); ' +
-'				Say("Goodbye"); ' +
-'				hasItem = false; ' +
-'			} ' +
-'			else { ' +
-'				Say("Come back when you have enough money."); ' +
-'			} ' +
-'		} ' +
-'		else { ' +
-'			Say("Have a nice day."); ' +
-'		} ' +
-'	}); ';
+var Compiler = (function() {
+"use strict";
 function isCall(touple) {
  return touple[0] === "call"
      && touple[1] && touple[1][0] === "name";
@@ -7267,25 +7251,21 @@ function deepCopy(obj) {
  }
  return obj;
 }
-var uglyparse = Uglify;
-var uglyprocess = Uglify;
-var source = SOURCE;
-var ast = uglyparse.parse(source);
-iterateOverCalls(ast, function(call) {
- var args = call[2];
- args.unshift( ["name", "_"] );
-});
-iterateOverFunctionDefs(ast, function(func) {
- var args = func[2];
- args.unshift( ["_"] );
-});
-var newsource = uglyprocess.gen_code(ast);
-console.log(newsource);
-try {
- var codeOut = Streamline.transform(newsource);
- console.log(codeOut);
- eval(codeOut);
-}
-catch (e) {
- console.error(e);
-}
+return {
+ "underscore" : function(source) {
+  var ast = Uglify.parse(source);
+  iterateOverCalls(ast, function(call) {
+   var args = call[2];
+   args.unshift( ["name", "_"] );
+  });
+  iterateOverFunctionDefs(ast, function(func) {
+   var args = func[2];
+   args.unshift( ["_"] );
+  });
+  return Uglify.gen_code(ast);
+ },
+ "makeasync" : function(source) {
+  return Streamline.transform(source);
+ }
+};
+}());

@@ -2,24 +2,9 @@
 #include <uglify.js>
 #include <streamline.js> 
 
-var SOURCE = 
-'	var hasItem = true; ' +
-'	OnTrigger(function() { ' +
-'		if (hasItem) { ' +
-'			if ((Game.gold >= 5)) { ' +
-'				var answer = Choose("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon"); ' +
-'				GiveItem(answer); ' +
-'				Say("Goodbye"); ' +
-'				hasItem = false; ' +
-'			} ' +
-'			else { ' +
-'				Say("Come back when you have enough money."); ' +
-'			} ' +
-'		} ' +
-'		else { ' +
-'			Say("Have a nice day."); ' +
-'		} ' +
-'	}); ';
+
+var Compiler = (function() { 
+"use strict"; 
 
 function isCall(touple) {
 	return touple[0] === "call" 
@@ -71,36 +56,25 @@ function deepCopy(obj) {
 	return obj;
 }
 
-var uglyparse   = Uglify;  
-var uglyprocess = Uglify; 
-//var fs          = require("fs"); 
+return {
+	"underscore" : function(source) {
+		var ast = Uglify.parse(source); 
 
-var source = SOURCE; // fs.readFileSync(process.argv[2]).toString() 
-var ast = uglyparse.parse(source); 
+		iterateOverCalls(ast, function(call) {
+			var args = call[2]; 
+			args.unshift( ["name", "_"] ); //callback for streamline.js
+		});
 
-//console.log(JSON.stringify(ast)); 
-//throw ""; 
+		iterateOverFunctionDefs(ast, function(func) {
+			var args = func[2]; 
+			args.unshift( ["_"] ); //callback for streamline.js
+		});
 
-iterateOverCalls(ast, function(call) {
-	var args = call[2]; 
-	//console.log(" > " + JSON.stringify(args)); 
-	args.unshift( ["name", "_"] ); //callback for streamline.js
-});
+		return Uglify.gen_code(ast); 
+	},
+	"makeasync" : function(source) {
+		return Streamline.transform(source); 
+	}
+};
 
-iterateOverFunctionDefs(ast, function(func) {
-	var args = func[2]; 
-	args.unshift( ["_"] ); //callback for streamline.js
-});
-
-var newsource = uglyprocess.gen_code(ast); 
-
-console.log(newsource); 
-
-try { 
-	var codeOut = Streamline.transform(newsource);
-	console.log(codeOut); 
-	eval(codeOut); 
-} 
-catch (e) {
-	console.error(e); 
-}
+}()); 

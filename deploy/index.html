@@ -1,4 +1,66 @@
+<style>
+textarea {
+	border:1px solid #999999;
+	width:100%;
+	height:100%;
+	margin:5px 0;
+	padding:3px;
+}
+</style> 
 <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="predefs.js"> </script>  
 <script src="finished.js"> </script>  
+<table width="100%" height="100%">
+<tr height="95%">
+<td><textarea id="codeinput">var hasItem = true; 
+OnTrigger(function() { 
+	if (hasItem) { 
+		if ((Game.gold &gt;= 5)) { 
+			var answer = Choose("You have enough gold. you want a portion or a weapon?", "Portion", "Weapon"); 
+			GiveItem(answer); 
+			Say("Goodbye"); 
+			hasItem = false; 
+			Game.gold -= 5;
+		} 
+		else { 
+			Say("Come back when you have enough money."); 
+		} 
+	} 
+	else { 
+		Say("Have a nice day."); 
+	} 
+});</textarea></td> 
+<td><textarea id="underscore"> </textarea></td> 
+<td><textarea id="streamline"> </textarea></td> 
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><button id="execute">Execute</button> <button id="trigger">onTrigger()</button></td>
+</tr> 
+</table> 
+</body> 
+<script>
+$(function() { 
+	$("#codeinput").keyup(function() {
+		var source = $("#codeinput").val(); 
+		var underscore = Compiler.underscore(source); 
+		$("#underscore").val(underscore); 
 
+		var async = Compiler.makeasync(underscore); 
+		$("#streamline").val(async); 
+	}); 
+
+	$("#execute").click(function() {
+		eval( $("#streamline").val() ); 
+		if(window.onTrigger) window.onTrigger(function(err) { if(err) console.error(err); });
+	}); 
+
+	$("#trigger").click(function() {
+		window.onTrigger(); 
+	}); 
+
+	$("#codeinput").keyup(); 
+}); 
+</script> 
